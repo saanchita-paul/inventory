@@ -1,26 +1,38 @@
 <template>
-  <main id="app">
+  <header>
+
+      <v-app-bar color="white">
+          <v-img src="../src/assets/logo.png"></v-img>
+          <v-toolbar-title class="header">Home</v-toolbar-title>
+          <v-toolbar-title class="header">Products</v-toolbar-title>
+          <v-toolbar-title class="header">Pricing</v-toolbar-title>
+          <v-toolbar-title class="header">Be a Reseller</v-toolbar-title>
+          <v-toolbar-title class="header">Blog</v-toolbar-title>
+          <v-toolbar-title class="header" >Gallery</v-toolbar-title>
+          <v-toolbar-title class="header"> Contact Us</v-toolbar-title>
+      </v-app-bar>
+  </header>
 
     <section className='intro'>
 
       <div className='introDescription' data-aos="zoom-in"
            data-aos-duration="1500"
            data-aos-delay='500'>
-        SOKRIO
         <br>
-        <v-btn color="purple" class="align-center">Login</v-btn>
-        <p> Inventory Management </p>
+        <v-container>
+          <router-link style="text-decoration: none" color="blue" variant="outlined" class="login" to="/login">Login</router-link>
+          <p> Sokrio Distribution Management System</p>
+        </v-container>
+
       </div>
       <img className='introImage'
-           src='https://res.cloudinary.com/dsderm9xw/image/upload/v1622028117/3D%20Illustrations/3d-illustration4_usckww.png'
-           alt='3d illustration of boy with a flag'/>
+           src='../assets/sokrio_dashboard.png'/>
 
     </section>
 
     <section className='guide1'>
       <img className='guide1Image'
-           src='https://res.cloudinary.com/dsderm9xw/image/upload/v1622028085/3D%20Illustrations/3d-illustration2_ykuua3.png'
-           alt='3d illustration of boy sitting with legs crossed'
+           src='../assets/image2.png'
            data-aos="slide-down"
            data-aos-ease='ease'
            data-aos-duration="1500"
@@ -30,17 +42,11 @@
            data-aos-ease='ease'
            data-aos-duration="1500"
            data-aos-delay='1000'>
-        <h1> Set up your <br> study space. </h1>
+        <h1> Why SOKRIO? </h1>
         <div>
-          Find an area in your house where
+          Save up to 38 SR's annual salaries for
           <br>
-          you can sit comfortably and focus.
-          <br>
-          Make it separate to your relaxation space.
-          <br>
-          Ideally away from a TV screen
-          <br>
-          or other distractions.
+          every 100-member  sales team!
         </div>
       </div>
 
@@ -53,24 +59,23 @@
            data-aos-ease='ease'
            data-aos-duration="1500"
            data-aos-delay='1000'>
-        <h1> Plan your <br> day ahead. </h1>
+        <h1> Who We Are?</h1>
         <div>
-          If you have one,
+          Sokrio Technologies Ltd. is a team comprised
           <br>
-          follow the schedule provided by your school.
+          of multi-industry experienced, ambitious individuals.
           <br>
-          If you just have a list of things to study,
+          We genuinely keep our customers at the core of our business and
           <br>
-          break it down into small tasks and
+          strive to deliver a "wow factor" to our customers!
           <br>
-          plan to do the hardest ones
+          We believe in continuous development, and
           <br>
-          when you have the most energy.
+          always aim to deliver positive customer experiences for our stakeholders.
         </div>
       </div>
       <img className='guide2Image'
-           src='https://res.cloudinary.com/dsderm9xw/image/upload/v1622028057/3D%20Illustrations/3d-illustration1_j06j0a.png'
-           alt='3d illustration of boy with laptop sitting'
+           src='../assets/initial-image.png'
            data-aos="slide-up"
            data-aos-duration="1500"
            data-aos-ease='ease'
@@ -80,13 +85,12 @@
     </section>
 
     <footer>
-      Developed by FAE
+      Copyright 2023 Sokrio
     </footer>
-  </main>
+
 </template>
 
 
-<!-- Use preprocessors via the lang attribute! e.g. <style lang="scss"> -->
 <style>
 * {
   margin: 0;
@@ -108,7 +112,7 @@
 }
 
 .introDescription p {
-  font-size: 60px;
+  font-size: 40px;
   color: #632b2b;
   font-weight: 900;
 }
@@ -222,14 +226,28 @@ footer {
   }
 
 }
+.header {
+  font-size: 16px!important;
+  padding: 0!important;
+  cursor: auto;
+}
+
+.login{
+  background: #535bf2;
+  color: white;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+.login:hover{
+  background: rgba(42, 43, 53, 0.78);
+  color: white;
+}
 
 </style>
 
 <script>
 
 export default {
-  // mounted() {
-  //   AOS.init()
-  // }
 }
 </script>
