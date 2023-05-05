@@ -142,7 +142,7 @@ export default {
     },
     getColor (fat) {
       if (fat == 'Pending') return 'red'
-      else if (fat == 'Pending') return 'orange'
+      else if (fat == 'Ordered') return 'yellow'
       else return 'green'
     },
   },

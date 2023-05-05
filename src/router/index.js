@@ -6,6 +6,8 @@ import ProductList from "../components/ProductList.vue";
 import CreateProduct from "../components/CreateProduct.vue";
 import PurchaseList from "../components/PurchaseList.vue";
 import AddNewPurchase from "../components/AddNewPurchase.vue";
+import ProductDetails from "../components/ProductDetails.vue";
+import Test from "../components/Test.vue";
 
 
 const routes = [
@@ -35,6 +37,11 @@ const routes = [
                 component: CreateProduct
             },
             {
+                path: 'product-details',
+                name: 'ProductDetails',
+                component: ProductDetails
+            },
+            {
                 path: 'purchase-list',
                 name: 'PurchaseList',
                 component: PurchaseList
@@ -43,6 +50,11 @@ const routes = [
                 path: 'purchase-add',
                 name: 'AddNewPurchase',
                 component: AddNewPurchase
+            },
+            {
+                path: 'test',
+                name: 'Test',
+                component: Test
             },
         ],
     },

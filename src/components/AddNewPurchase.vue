@@ -31,6 +31,17 @@
           class="elevation-1"
           item-value="name"
       >
+        <template v-slot:item.fat="{ item }">
+          <div class="d-flex align-center">
+            <v-btn fab small color="primary" @click="item.fat--">
+              <v-icon>mdi-minus</v-icon>
+            </v-btn>
+            <v-text-field v-model="item.fat" class="mx-2"></v-text-field>
+            <v-btn fab small color="primary" @click="item.fat++">
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </div>
+        </template>
         <template v-slot:top>
           <p class="p-title">Products</p>
           <v-text-field
