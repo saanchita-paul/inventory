@@ -10,24 +10,30 @@
     </v-row>
     <br>
     <v-card>
-      <v-data-table
+      <v-card-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+            density="compact"
+            rounded
+            variant="outlined"
+            v-model="search"
+            prepend-inner-icon="mdi-magnify"
+            label="Search name.."
+            single-line
+            hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table-server
+          v-model:items-per-page="pagination.per_page"
+          :search="search"
           :headers="headers"
-          :items="desserts"
-          :sort-by="[{ key: 'calories', order: 'asc' }]"
+          :items-length="pagination.total"
+          :items="products"
+          :loading="loading"
           class="elevation-1"
+          item-value="name"
+          @update:options="loadProducts"
       >
-        <template v-slot:top>
-          <v-toolbar style="display: none"
-              flat
-          >
-            <v-divider
-                class="mx-4"
-                inset
-                vertical
-            ></v-divider>
-            <v-spacer></v-spacer>
-          </v-toolbar>
-        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
               size="small"
@@ -37,15 +43,10 @@
             mdi-eye
           </v-icon>
         </template>
-        <template v-slot:no-data>
-          <v-btn
-              color="primary"
-              @click="initialize"
-          >
-            Reset
-          </v-btn>
-        </template>
-      </v-data-table>
+
+      </v-data-table-server>
+
+
     </v-card>
 
   </v-container>
@@ -54,126 +55,31 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
   data: () => ({
     headers: [
-      {
-        title: 'Product Name',
-        align: 'start',
-        sortable: false,
-        key: 'name',
-      },
-      { title: 'Category', key: 'calories' },
-      { title: 'Price', key: 'fat' },
-      { title: 'QTY', key: 'carbs' },
-      { title: 'Created By', key: 'protein' },
+      {title: 'Product Name', align: 'start', sortable: false, key: 'product_name',},
+      { title: 'Category', key: 'category_id' },
+      { title: 'Price', key: 'price' },
+      // { title: 'QTY', key: 'price' },
+      { title: 'Created By', key: 'created_at' },
       { title: 'Actions', key: 'actions', sortable: false },
     ],
-    desserts: [],
-    details: [
-      {
-        name: 'Frozen Yogurt',
-        category: 'red',
-        price: 159,
-        description: 'Lorem Ipsum',
-      },
-      {
-        name: 'Ice cream sandwich',
-        category: 'blue',
-        price: 159,
-        description: 'Lorem Ipsum',
-      },
-      {
-        name: 'Eclair',
-        category: 'green',
-        price: 159,
-        description: 'Lorem Ipsum',
-      },
-    ],
+    products: [],
+    loading: true,
+    search: '',
+    pagination: {
+      total: 0,
+      page: 1,
+      per_page: 10
+    }
 
   }),
 
 
-  created () {
-    this.initialize()
-  },
-
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ]
-    },
-
 
     addProduct() {
       this.$router.push({
@@ -184,7 +90,16 @@ export default {
       this.$router.push({
         name: 'ProductDetails'
       })
-    }
+    },
+    async loadProducts({ page, itemsPerPage, sortBy, search }) {
+      this.loading = true
+      const response = (await axios.get('http://127.0.0.1:8000/api/products',
+          {params: {per_page: itemsPerPage, page: page, search: search}})).data
+      this.pagination.total = response.total;
+      this.products = response.data;
+      console.log(response, 'usr')
+      this.loading = false;
+    },
   },
 
 }

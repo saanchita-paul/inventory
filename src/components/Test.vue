@@ -1,258 +1,168 @@
 <template>
-  <v-data-table
-      :headers="headers"
-      :items="serverItems"
-      :sort-by="[{ key: 'calories', order: 'asc' }]"
-      class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-toolbar
-          flat
-      >
-        <v-divider
-            class="mx-4"
-            inset
-            vertical
-        ></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog
-            v-model="dialog"
-            max-width="500px"
-        >
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
+  <v-container>
+    <v-row>
+      <v-col cols="9">
+        <h2>New Purchase</h2>
+      </v-col>
+      <v-col cols="3">
+      </v-col>
+    </v-row>
+    <br>
+    <v-card>
+      <v-container>
+      <v-row>
+        <v-col cols="4">
+          <v-text-field density="compact" variant="outlined">Date</v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field density="compact" variant="outlined">Invoice No.</v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-select density="compact" variant="outlined"
+              label="Supplier"
+              :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-autocomplete
+          :items="products"
+          :loading="loading"
+          item-title="product_name"
+          item-value="id"
+          label="Product Name"
+          v-model:search="search"
+          @input="searchProducts"
+          prepend-inner-icon="mdi-search"
+          append-icon="home"
+          @update:modelValue="onSelectProduct"
+          :return-object="true"
+          clearable
+          density="compact"
+          variant="outlined"
+      ></v-autocomplete>
+      <v-table>
+        <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Current Stock</th>
+          <th>Quantity</th>
+          <th>Price(ট)</th>
+          <th>Total Price(ট)</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(product, index) in purchase.products" :key="product.id">
+          <td>{{ product.product_name }}</td>
+          <td>{{ product.category_id }}</td>
+          <td>
+            <div class="d-flex align-center">
+              <v-btn fab small color="blue" @click="product.quantity--">
+                <v-icon>mdi-minus</v-icon>
+              </v-btn>
+              <v-text-field  density="compact" variant="outlined"
+                             v-model="product.quantity" class="mx-2 pt-6 align-center">
+              </v-text-field>
+              <v-btn fab small color="blue" @click="product.quantity++">
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </div>
+          </td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.price * product.quantity }}</td>
 
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                  >
-                    <v-text-field
-                        v-model="editedItem.name"
-                        label="Dessert name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                  >
-                    <v-text-field
-                        v-model="editedItem.calories"
-                        label="Calories"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                  >
-                    <v-text-field
-                        v-model="editedItem.fat"
-                        label="Fat (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                  >
-                    <v-text-field
-                        v-model="editedItem.carbs"
-                        label="Carbs (g)"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                      cols="12"
-                      sm="6"
-                      md="4"
-                  >
-                    <v-text-field
-                        v-model="editedItem.protein"
-                        label="Protein (g)"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+          <td>
+            <v-icon size="small" class="me-2" @click="deleteRow(product)">
+              mdi-delete
+            </v-icon>
+          </td>
+        </tr>
+        </tbody>
+      </v-table>
+      <br>
+      <v-row>
+        <v-col cols="8">
+          <v-text-field density="compact" variant="outlined">Note</v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-text-field density="compact" variant="outlined">Total(ট)</v-text-field>
 
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue-darken-1" variant="text" @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue-darken-1" variant="text" @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon
-          size="small"
-          @click="deleteItem(item.raw)"
-      >
-        mdi-delete
-      </v-icon>
-    </template>
-  </v-data-table>
+        </v-col>
+      </v-row>
+      <div class="float-end pa-5">
+        <v-btn class="d-flex justify-center align-center" color="blue">Coinfirm</v-btn>
+      </div>
+      </v-container>
+    </v-card>
+  </v-container>
 </template>
+
 <script>
+import axios from 'axios'
+
 export default {
-  data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    headers: [
-      {
-        title: 'Dessert (100g serving)',
-        align: 'start',
-        sortable: false,
-        key: 'name',
+  data() {
+    return {
+      products: [],
+      loading: false,
+      search: '',
+      selectedProduct: null,
+      purchase: {
+        date: null,
+        invoiceNo: null,
+        supplier: '',
+        products: [],
+        note: '',
+        grantTotal: 0,
       },
-      { title: 'Calories', key: 'calories' },
-      { title: 'Fat (g)', key: 'fat' },
-      { title: 'Carbs (g)', key: 'carbs' },
-      { title: 'Protein (g)', key: 'protein' },
-      { title: 'Actions', key: 'actions', sortable: false },
-    ],
-    serverItems: [],
-
-  }),
-
-
-  watch: {
-    dialog (val) {
-      val || this.close()
-    },
-    dialogDelete (val) {
-      val || this.closeDelete()
-    },
+      deleteDisabled: true,
+      tableHeaders: [
+        { title: 'Product Name', value: 'product_name' },
+        { title: 'Category', value: 'category_id' },
+        { title: 'Price', value: 'price' },
+        { title: 'Action', value: 'action' },
+      ],
+      tableSearch: '',
+    }
   },
-
-  created () {
-    this.initialize()
-  },
-
   methods: {
-    initialize () {
-      this.serverItems = [
-        {
-          name: 'Frozen Yogurt',
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-        },
-        {
-          name: 'Ice cream sandwich',
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-        },
-        {
-          name: 'Eclair',
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-        },
-        {
-          name: 'Cupcake',
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-        },
-        {
-          name: 'Gingerbread',
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-        },
-        {
-          name: 'Jelly bean',
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-        },
-        {
-          name: 'Lollipop',
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-        },
-        {
-          name: 'Honeycomb',
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-        },
-        {
-          name: 'Donut',
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-        },
-        {
-          name: 'KitKat',
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-        },
-      ]
-    },
-
-    deleteItem (item) {
-      this.editedIndex = this.serverItems.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm () {
-      this.serverItems.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-
-    close () {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    closeDelete () {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
-    save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.serverItems[this.editedIndex], this.editedItem)
-      } else {
-        this.serverItems.push(this.editedItem)
+    async searchProducts() {
+      this.loading = true
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/products', {
+          params: {
+            search: this.search,
+          },
+        })
+        this.products = response.data.data
+        this.loading = false
+      } catch (error) {
+        console.error(error)
       }
-      this.close()
     },
+    onSelectProduct(product) {
+      this.search = ''
+      product.quantity = 1
+      this.purchase.products.push(product)
+      this.purchase.grantTotal += product.price
+    },
+    // deleteRow(item) {
+    //   const index = this.purchase.products.indexOf(item)
+    //   if (index > -1) {
+    //     this.purchase.products.splice(index, 1)
+    //   }
+    // },
+    deleteRow(product) {
+      const index = this.purchase.products.findIndex(p => p.id === product.id);
+      if (index > -1) {
+        this.purchase.products.splice(index, 1);
+      }
+    }
   },
 }
 </script>
+<style>
+.v-main {
+  flex: unset!important;
+}
+</style>

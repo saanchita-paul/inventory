@@ -24,7 +24,7 @@
           </v-chip>
         </template>
         <template v-slot:top>
-          <v-text-field
+          <v-text-field density="compact" variant="outlined"
               v-model="search"
               label="Search..."
               class="pa-4"
