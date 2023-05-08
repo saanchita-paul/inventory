@@ -1,10 +1,11 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="9">
+      <v-col cols="10">
         <h2>New Purchase</h2>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="2">
+        <v-btn color="black" @click="pList"> Back</v-btn>
       </v-col>
     </v-row>
     <br>
@@ -12,10 +13,10 @@
       <v-container>
         <v-row>
           <v-col cols="4">
-            <v-text-field density="compact" variant="outlined">Date</v-text-field>
+            <v-text-field density="compact" variant="outlined" label="Date"/>
           </v-col>
           <v-col cols="4">
-            <v-text-field density="compact" variant="outlined">Invoice No.</v-text-field>
+            <v-text-field density="compact" variant="outlined" label="Invoice No." />
           </v-col>
           <v-col cols="4">
             <v-select density="compact" variant="outlined"
@@ -68,7 +69,9 @@
                 </v-btn>
               </div>
             </td>
-            <td>{{ product.price }}</td>
+            <td class="pt-5">
+              <v-text-field density="compact" variant="outlined" label="Price" />
+            </td>
             <td>{{ product.price * product.quantity }}</td>
 
             <td>
@@ -82,15 +85,11 @@
         <br>
         <v-row>
           <v-col cols="8">
-            <v-text-field density="compact" variant="outlined">Note</v-text-field>
+            <v-text-field density="compact" variant="outlined" label="Note" />
           </v-col>
-          <v-col cols="4">
-            <v-text-field label="Total(ট)"
-                          :model-value="totalPrice"
-                          density="compact"
-                          variant="outlined">
-            </v-text-field>
-
+          <v-col cols="4 pt-5">
+            <span class="pr-5">Total(ট)</span>
+            <span class="totalPrice">{{ totalPrice }}</span>
           </v-col>
         </v-row>
         <div class="float-end pa-5">
@@ -103,6 +102,7 @@
 
 <script>
 import axios from 'axios'
+import purchaseList from "./PurchaseList.vue";
 
 export default {
   data() {
@@ -166,12 +166,23 @@ export default {
       if (index > -1) {
         this.purchase.products.splice(index, 1);
       }
+    },
+    pList() {
+      this.$router.push({
+        name: 'PurchaseList'
+      })
     }
+
   },
 }
 </script>
 <style>
 .v-main {
   flex: unset!important;
+}
+.totalPrice {
+  border: #90a1a1 solid 1px;
+  padding: 10px 60px;
+  border-radius: 5px;
 }
 </style>

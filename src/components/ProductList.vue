@@ -5,7 +5,7 @@
         <h2>Product List</h2>
       </v-col>
       <v-col cols="3">
-        <v-btn @click="addProduct" color="green">+ Add New Product</v-btn>
+        <v-btn @click="addProduct" color="blue">+ Add New Product</v-btn>
       </v-col>
     </v-row>
     <br>
@@ -18,7 +18,7 @@
             variant="outlined"
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            label="Search name.."
+            label="Search product name.."
             single-line
             hide-details
         ></v-text-field>
@@ -38,17 +38,13 @@
           <v-icon
               size="small"
               class="me-2"
-              @click="detailsPage"
+              @click="detailsPage(item.value.id)"
           >
             mdi-eye
           </v-icon>
         </template>
-
       </v-data-table-server>
-
-
     </v-card>
-
   </v-container>
 
 </template>
@@ -61,10 +57,10 @@ export default {
   data: () => ({
     headers: [
       {title: 'Product Name', align: 'start', sortable: false, key: 'product_name',},
-      { title: 'Category', key: 'category_id' },
+      { title: 'Category', key: 'category.category_title' },
       { title: 'Price', key: 'price' },
-      // { title: 'QTY', key: 'price' },
-      { title: 'Created By', key: 'created_at' },
+      { title: 'Unit', key: 'stock.unit' },
+      { title: 'QTY', key: 'stock.quantity' },
       { title: 'Actions', key: 'actions', sortable: false },
     ],
     products: [],
@@ -86,18 +82,17 @@ export default {
         name: 'CreateProduct'
       })
     },
-    detailsPage() {
-      this.$router.push({
-        name: 'ProductDetails'
-      })
+    detailsPage(id) {
+      console.log('item', id);
+      this.$router.push(`/dashboard/product/${id}`);
     },
     async loadProducts({ page, itemsPerPage, sortBy, search }) {
       this.loading = true
-      const response = (await axios.get('http://127.0.0.1:8000/api/products',
+      const response = (await axios.get('http://127.0.0.1:8000/api/product/list',
           {params: {per_page: itemsPerPage, page: page, search: search}})).data
       this.pagination.total = response.total;
       this.products = response.data;
-      console.log(response, 'usr')
+      console.log(response, 'product')
       this.loading = false;
     },
   },
