@@ -11,18 +11,20 @@
     <br>
     <v-card>
       <v-container>
+        <form @submit.prevent="submit">
         <v-row>
           <v-col cols="4">
-            <v-text-field density="compact" variant="outlined" label="Date"/>
+            <v-text-field v-model.trim="purchase.date" density="compact" variant="outlined" label="Date"/>
           </v-col>
           <v-col cols="4">
-            <v-text-field density="compact" variant="outlined" label="Invoice No." />
+            <v-text-field v-model.trim="purchase.invoice_no" density="compact" variant="outlined" label="Invoice No." />
           </v-col>
           <v-col cols="4">
-            <v-select density="compact" variant="outlined"
-                      label="Supplier"
-                      :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-            ></v-select>
+            <v-text-field v-model.trim="purchase.supplier_name" density="compact" variant="outlined" label="Supplier" />
+<!--            <v-select density="compact" variant="outlined"-->
+<!--                      label="Supplier"-->
+<!--                      :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"-->
+<!--            ></v-select>-->
           </v-col>
         </v-row>
         <v-autocomplete
@@ -70,7 +72,7 @@
               </div>
             </td>
             <td class="pt-5">
-              <v-text-field density="compact" variant="outlined" label="Price" />
+              <v-text-field type="number" v-model="product.price" density="compact" variant="outlined" label="Price" />
             </td>
             <td>{{ product.price * product.quantity }}</td>
 
@@ -85,16 +87,18 @@
         <br>
         <v-row>
           <v-col cols="8">
-            <v-text-field density="compact" variant="outlined" label="Note" />
+            <v-text-field v-model.trim="purchase.note" density="compact" variant="outlined" label="Note" />
           </v-col>
           <v-col cols="4 pt-5">
             <span class="pr-5">Total(ট)</span>
-            <span class="totalPrice">{{ totalPrice }}</span>
+            <span class="totalPrice">{{ grantTotalPrice }}</span>
           </v-col>
         </v-row>
         <div class="float-end pa-5">
-          <v-btn class="d-flex justify-center align-center" color="blue">Coinfirm</v-btn>
+          <v-btn class="d-flex justify-center align-center" color="blue"
+                 type="submit" @click="savePurchase">Coinfirm</v-btn>
         </div>
+        </form>
       </v-container>
     </v-card>
   </v-container>
@@ -113,11 +117,11 @@ export default {
       selectedProduct: null,
       purchase: {
         date: null,
-        invoiceNo: null,
-        supplier: '',
+        invoice_no: null,
+        supplier_name: '',
         products: [],
         note: '',
-        grantTotal: 0,
+        grant_total: 0,
       },
       deleteDisabled: true,
       tableHeaders: [
@@ -130,9 +134,14 @@ export default {
     }
   },
   computed: {
-    totalPrice() {
-      return this.purchase.products.price * this.purchase.products.quantity;
-    }
+    grantTotalPrice()
+    {
+      let sum = 0;
+      this.purchase.products.forEach((item) =>{
+        sum = sum + item.price * item.quantity;
+      })
+      return sum
+    },
   },
   methods: {
     async searchProducts() {
@@ -152,8 +161,8 @@ export default {
     onSelectProduct(product) {
       this.search = ''
       product.quantity = 1
+      product.price = 0
       this.purchase.products.push(product)
-      this.purchase.grantTotal += product.price
     },
     // deleteRow(item) {
     //   const index = this.purchase.products.indexOf(item)
@@ -171,6 +180,18 @@ export default {
       this.$router.push({
         name: 'PurchaseList'
       })
+    },
+   async savePurchase()
+    {
+      this.purchase.grant_total = this.grantTotalPrice
+      await axios.post('http://127.0.0.1:8000/api/purchase/create', this.purchase)
+          .then((response) => {
+            console.log('create purchase', response.data);
+            this.$router.push({ name: 'PurchaseList' });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
     }
 
   },
