@@ -1,5 +1,4 @@
 <template>
-
   <v-sheet class="pa-12" rounded>
     <v-card class="mx-auto px-6 py-8" max-width="700">
       <v-row>
@@ -65,7 +64,7 @@ export default {
       })
     },
    async loadCategories() {
-     await axios.get('http://127.0.0.1:8000/api/categories/')
+     await axios.get('http://127.0.0.1:8000/api/product/categories/')
           .then(response => {
             this.categories = response.data;
             console.log('category', response.data);

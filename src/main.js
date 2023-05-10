@@ -9,8 +9,15 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import {VuetifyDateAdapter} from "vuetify/labs/date/adapters/vuetify";
-
 import router from "./router/index.js";
+import {authUser} from "./services/AuthService.js";
+import store from "./store/index.js";
+import axios from "axios";
+import './plugins/Axios'
+
+
+axios.defaults.withCredentials = true;
+
 const vuetify = createVuetify({
 
     components: {
@@ -33,4 +40,6 @@ const vuetify = createVuetify({
 })
 const app = createApp(App)
 
-app.use(vuetify).use(router).mount('#app')
+authUser().finally(() =>{
+    app.use(vuetify).use(router).use(store).mount('#app')
+})

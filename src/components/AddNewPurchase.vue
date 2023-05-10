@@ -14,17 +14,17 @@
         <form @submit.prevent="submit">
         <v-row>
           <v-col cols="4">
-            <v-text-field v-model.trim="purchase.date" density="compact" variant="outlined" label="Date"/>
+            <v-text-field v-model="purchase.date" density="compact" variant="outlined" label="Date"/>
           </v-col>
           <v-col cols="4">
-            <v-text-field v-model.trim="purchase.invoice_no" density="compact" variant="outlined" label="Invoice No." />
+            <v-text-field v-model="purchase.invoice_no" density="compact" variant="outlined" label="Invoice No." />
           </v-col>
           <v-col cols="4">
-            <v-text-field v-model.trim="purchase.supplier_name" density="compact" variant="outlined" label="Supplier" />
-<!--            <v-select density="compact" variant="outlined"-->
-<!--                      label="Supplier"-->
-<!--                      :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"-->
-<!--            ></v-select>-->
+         <v-select density="compact" variant="outlined"
+                      label="Supplier"
+                      v-model="purchase.supplier_name"
+                      :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+            ></v-select>
           </v-col>
         </v-row>
         <v-autocomplete
@@ -63,7 +63,7 @@
                 <v-btn fab small color="blue" @click="product.quantity--">
                   <v-icon>mdi-minus</v-icon>
                 </v-btn>
-                <v-text-field  density="compact" variant="outlined"
+                <v-text-field  density="compact" variant="outlined" type="number"
                                v-model="product.quantity" class="mx-2 pt-6 align-center">
                 </v-text-field>
                 <v-btn fab small color="blue" @click="product.quantity++">
@@ -164,12 +164,6 @@ export default {
       product.price = 0
       this.purchase.products.push(product)
     },
-    // deleteRow(item) {
-    //   const index = this.purchase.products.indexOf(item)
-    //   if (index > -1) {
-    //     this.purchase.products.splice(index, 1)
-    //   }
-    // },
     deleteRow(product) {
       const index = this.purchase.products.findIndex(p => p.id === product.id);
       if (index > -1) {
@@ -183,15 +177,16 @@ export default {
     },
    async savePurchase()
     {
+      console.log('hi');
       this.purchase.grant_total = this.grantTotalPrice
-      await axios.post('http://127.0.0.1:8000/api/purchase/create', this.purchase)
-          .then((response) => {
-            console.log('create purchase', response.data);
-            this.$router.push({ name: 'PurchaseList' });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      console.log('grant', this.purchase.grant_total);
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/api/purchase/create', this.purchase);
+        console.log('create purchase', response.data);
+        this.$router.push({ name: 'PurchaseList' });
+      } catch (error) {
+        console.error(error.response);
+      }
     }
 
   },

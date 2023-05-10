@@ -17,7 +17,7 @@
       </v-list>
       <v-divider></v-divider>
       <v-list nav>
-        <v-list-item prepend-icon="mdi-logout" title="Logout" value="Logout" color="red"></v-list-item>
+        <v-list-item @click="onLogout" prepend-icon="mdi-logout" title="Logout" value="Logout" color="red"></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -36,6 +36,7 @@
 
 <script>
 import ProductList from "./ProductList.vue";
+import AuthService from "../services/AuthService.js";
 
 export default {
   methods:{
@@ -43,6 +44,10 @@ export default {
       this.$router.push({
         name: 'ProductList'
       })
+    },
+
+    async onLogout(){
+      await AuthService.logout();
     }
   },
   data: () => ({ drawer: null }),
