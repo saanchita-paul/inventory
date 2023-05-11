@@ -12,7 +12,7 @@ This repository contains the source code for an Inventory Management System, a w
 - Search and Filtering: The system provides search functionality to search for products by name and filtering options to refine search results.
 - Access Control: Certain operations, such as adding and editing products, are restricted to authenticated users only.
 
-#Installation
+# Installation
 
 To set up the Inventory Management System locally, follow these steps:
 
