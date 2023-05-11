@@ -16,6 +16,8 @@ This repository contains the source code for an Inventory Management System, a w
 
 To set up the Inventory Management System locally, follow these steps:
 
+- Make sure you have node 16.x installed
+
 - Clone the repository:
 ```git
 git clone https://github.com/saanchita-paul/inventory.git
@@ -24,12 +26,12 @@ git clone https://github.com/saanchita-paul/inventory.git
 - Install the dependencies using Yarn:
 
 ```git
-yarn install
+npm install
 ```
 
 - Compile the frontend assets:
 ```
-yarn dev
+npm run dev
 ```
 
 - Access the application by visiting [localhost](http://localhost:5173/) in your web browser.
