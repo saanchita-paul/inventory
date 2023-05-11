@@ -1,7 +1,37 @@
-# Vue 3 + Vite
+# Inventory Management System
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This repository contains the source code for an Inventory Management System, a web application built using Vue.js, Backend (PHP and Laravel framework). The system provides functionality for managing products, purchases, categories, and user authentication.
 
-## Recommended IDE Setup
+## Features
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- Landing Page: A landing page which is home screen that serves as the welcome page
+- User Login: The system allows users to login and authenticate themselves using email and password.
+- Product Management: Users can add and view product details, including name, description, price, and stock quantity.
+- Purchase Management: Users can record purchases, specifying the product, quantity, and price, which updates the stock quantity and price accordingly.
+- Category Management: The current system lacks a user interface (UI) for the functionality of adding, editing, or deleting categories. Instead, a seeder was utilized in the backend for category data.
+- Search and Filtering: The system provides search functionality to search for products by name and filtering options to refine search results.
+- Access Control: Certain operations, such as adding, viewing and searching products, are restricted to authenticated users only.
+
+# Installation
+
+To set up the Inventory Management System locally, follow these steps:
+
+- Make sure you have node 16.x installed
+
+- Clone the repository:
+```git
+git clone https://github.com/saanchita-paul/inventory.git
+```
+
+- Install the dependencies using Yarn:
+
+```git
+npm install
+```
+
+- Compile the frontend assets:
+```
+npm run dev
+```
+
+- Access the application by visiting [localhost](http://localhost:5173/) in your web browser.
