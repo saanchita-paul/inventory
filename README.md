@@ -5,12 +5,12 @@ This repository contains the source code for an Inventory Management System, a w
 ## Features
 
 - Landing Page: A landing page which is home screen that serves as the welcome page
-- User Login: The system allows users to register and authenticate themselves using email and password.
-- Product Management: Users can add, view, and update product details, including name, description, price, and stock quantity.
+- User Login: The system allows users to login and authenticate themselves using email and password.
+- Product Management: Users can add and view product details, including name, description, price, and stock quantity.
 - Purchase Management: Users can record purchases, specifying the product, quantity, and price, which updates the stock quantity and price accordingly.
-- Category Management: Products can be categorized into different categories, and users can manage these categories by adding, editing, and deleting them.
+- Category Management: The current system lacks a user interface (UI) for the functionality of adding, editing, or deleting categories. Instead, a seeder was utilized in the backend for category data.
 - Search and Filtering: The system provides search functionality to search for products by name and filtering options to refine search results.
-- Access Control: Certain operations, such as adding and editing products, are restricted to authenticated users only.
+- Access Control: Certain operations, such as adding, viewing and searching products, are restricted to authenticated users only.
 
 # Installation
 
