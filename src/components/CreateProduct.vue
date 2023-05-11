@@ -18,7 +18,7 @@
               variant="outlined"
               label="Category"
               v-model="product.category_id"
-              :items=parseCategories
+              :items=categories
               item-value="id"
               item-text="category_title"
           />
@@ -36,6 +36,7 @@
 
 <script>
 import axios from 'axios';
+import ProductService from "../services/ProductService.js";
 
 export default {
   name: "CreateProduct",
@@ -63,23 +64,13 @@ export default {
         name: 'ProductList'
       })
     },
-   async loadCategories() {
-     await axios.get('http://127.0.0.1:8000/api/product/categories/')
-          .then(response => {
-            this.categories = response.data;
-            console.log('category', response.data);
-            this.parseCategories = this.categories.map((category) => {
-              return {
-                id: category.id,
-                title: category.category_title
-              };
-            });
-          })
-          .catch(error => {
-            console.log(error);
-          })
+    async loadCategories() {
+      const response = await ProductService.category();
+      this.categories = response.data.map(category => ({
+        id: category.id,
+        title: category.category_title
+      }));
     },
-
     async saveProduct () {
       await axios.post('http://127.0.0.1:8000/api/product/create', {
         product_name: this.product.product_name,
@@ -104,6 +95,7 @@ export default {
       this.product.price = '';
       this.product.description = '';
       this.product.image = null;
+      this.product.unit = '';
     },
   }
 };
