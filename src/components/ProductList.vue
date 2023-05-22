@@ -51,7 +51,7 @@
 
 
 <script>
-import axios from "axios";
+import ProductService from "../services/ProductService.js";
 
 export default {
   data: () => ({
@@ -86,13 +86,17 @@ export default {
       console.log('item', id);
       this.$router.push(`/dashboard/product/${id}`);
     },
-    async loadProducts({ page, itemsPerPage, sortBy, search }) {
-      this.loading = true
-      const response = (await axios.get('http://127.0.0.1:8000/api/product/list',
-          {params: {per_page: itemsPerPage, page: page, search: search}})).data
-      this.pagination.total = response.total;
-      this.products = response.data;
-      console.log(response, 'product')
+    async loadProducts() {
+      this.loading = true;
+      const { page, per_page, search } = this.pagination;
+      try {
+        const response = await ProductService.listProduct(page, per_page, this.search);
+        this.pagination.total = response.total;
+        this.products = response.data;
+        console.log('jjj', response);
+      } catch (error) {
+        console.log('Error loading products:', error);
+      }
       this.loading = false;
     },
   },

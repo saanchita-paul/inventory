@@ -88,6 +88,7 @@ export const kickOut = () => {
     router.push({name: 'Login'})
 }
 
+
 export default {
     getAuthUser,
     login,

@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col cols="9">
-        <h2>Product List</h2>
+        <h2>Purchase List</h2>
       </v-col>
       <v-col cols="3">
         <v-btn @click="addPurchase" color="blue">+ Add New Purchase</v-btn>
@@ -49,7 +49,8 @@
 
 
 <script>
-import axios from "axios";
+import PurchaseService from "../services/PurchaseService.js";
+
 
 export default {
   data: () => ({
@@ -79,13 +80,16 @@ export default {
       })
     },
 
-    async loadPurchases({ page, itemsPerPage, sortBy, search }) {
-      this.loading = true
-      const response = (await axios.get('http://127.0.0.1:8000/api/purchase/list',
-          {params: {per_page: itemsPerPage, page: page, search: search}})).data
-      this.pagination.total = response.total;
-      this.purchases = response.data;
-      console.log(response, 'purchase')
+    async loadPurchases() {
+      this.loading = true;
+      const { page, per_page, search } = this.pagination;
+      try {
+        const response = await PurchaseService.listPurchase(page, per_page, this.search);
+        this.pagination.total = response.total;
+        this.purchases = response.data;
+      } catch (error) {
+        console.log('Error loading purchase:', error);
+      }
       this.loading = false;
     },
     getStatusColor (status) {

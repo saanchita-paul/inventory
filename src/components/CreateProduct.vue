@@ -11,7 +11,7 @@
       </v-row>
       <v-container>
         <br>
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" enctype="multipart/form-data">
           <v-text-field density="compact" variant="outlined" label="Product Name" v-model.trim="product.product_name" />
           <v-select
               density="compact"
@@ -22,10 +22,10 @@
               item-value="id"
               item-text="category_title"
           />
-          <v-text-field density="compact" variant="outlined" label="Price" v-model.trim="product.price" />
-          <v-textarea density="compact" variant="outlined" label="Description" v-model.trim="product.description" />
-          <v-text-field density="compact" variant="outlined" label="Unit" v-model.trim="product.unit" />
-          <v-file-input  accept="image/*" density="compact" variant="outlined" label="Image" prepend-icon="mdi-camera" v-model="product.image" />
+          <v-text-field density="compact" variant="outlined" label="Price" v-model="product.price" />
+          <v-textarea density="compact" variant="outlined" label="Description" v-model="product.description" />
+          <v-text-field density="compact" variant="outlined" label="Unit" v-model="product.unit" />
+          <v-file-input  accept="image/*" type="file" density="compact" variant="outlined" label="Image" prepend-icon="mdi-camera" @change="onChange" />
           <v-btn color="blue" class="me-4" type="submit" @click="saveProduct">Submit</v-btn>
           <v-btn @click="handleReset" color="red">Clear</v-btn>
         </form>
@@ -36,7 +36,7 @@
 
 <script>
 import axios from 'axios';
-import ProductService from "../services/ProductService.js";
+import ProductService, {insertProduct} from "../services/ProductService.js";
 
 export default {
   name: "CreateProduct",
@@ -49,15 +49,19 @@ export default {
         price: "",
         image: null,
         unit: "",
+        file: ''
       },
       categories: [],
-      parseCategories: []
     };
   },
+
   mounted() {
     this.loadCategories();
   },
   methods: {
+    onChange(e) {
+      this.product.file = e.target.files[0];
+    },
     backToList()
     {
       this.$router.push({
@@ -72,21 +76,33 @@ export default {
       }));
     },
     async saveProduct () {
-      await axios.post('http://127.0.0.1:8000/api/product/create', {
-        product_name: this.product.product_name,
-        category_id: this.product.category_id,
-        description: this.product.description,
-        price: this.product.price,
-        image: this.product.image,
-        unit: this.product.unit,
-      })
-          .then((response) => {
-            console.log('create', response.data);
-            this.$router.push({ name: 'ProductList' });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      // Create a new FormData instance
+      const formData = new FormData();
+
+      // Append the product data to the formData object
+      formData.append('product_name', this.product.product_name);
+      formData.append('category_id', this.product.category_id);
+      formData.append('description', this.product.description);
+      formData.append('price', this.product.price);
+      formData.append('unit', this.product.unit);
+      formData.append('image', this.product.file);
+      // Check if an image file is selected
+      // if (this.product.image && this.product.image.length > 0) {
+      //   const imageFile = this.product.image[0];
+      //   formData.append('image', imageFile, imageFile.name);
+      // }
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      };
+
+      // Call the API to insert the product with the FormData
+      const response = await ProductService.insertProduct(formData,config);
+      console.log('create prod', response);
+    },
+    handleFileInput(fileList) {
+      this.product.image = Array.from(fileList);
     },
 
     handleReset() {

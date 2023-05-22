@@ -107,6 +107,7 @@
 <script>
 import axios from 'axios'
 import purchaseList from "./PurchaseList.vue";
+import PurchaseService, {searchProducts} from "../services/PurchaseService.js";
 
 export default {
   data() {
@@ -146,17 +147,22 @@ export default {
   methods: {
     async searchProducts() {
       this.loading = true
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/api/products', {
-          params: {
-            search: this.search,
-          },
-        })
-        this.products = response.data.data
-        this.loading = false
-      } catch (error) {
-        console.error(error)
-      }
+      const response = await PurchaseService.searchProducts(this.search)
+      this.products = response.data
+      console.log('ppp', response);
+      this.loading = false
+      // this.loading = true
+      // try {
+      //   const response = await axios.get('http://127.0.0.1:8000/api/product/list', {
+      //     params: {
+      //       search: this.search,
+      //     },
+      //   })
+      //   this.products = response.data.data
+      //   this.loading = false
+      // } catch (error) {
+      //   console.error(error)
+      // }
     },
     onSelectProduct(product) {
       this.search = ''
@@ -178,15 +184,21 @@ export default {
    async savePurchase()
     {
       console.log('hi');
-      this.purchase.grant_total = this.grantTotalPrice
+      this.purchase.grant_total = this.grantTotalPrice()
       console.log('grant', this.purchase.grant_total);
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/purchase/create', this.purchase);
-        console.log('create purchase', response.data);
-        this.$router.push({ name: 'PurchaseList' });
-      } catch (error) {
+      const response = await PurchaseService.insertPurchase(this.purchase)
+      console.log('create purchase', response);
+    } catch (error) {
         console.error(error.response);
       }
+      // try {
+      //   const response = await axios.post('http://127.0.0.1:8000/api/purchase/create', this.purchase);
+      //
+      //   this.$router.push({ name: 'PurchaseList' });
+      // } catch (error) {
+      //   console.error(error.response);
+      // }
     }
 
   },
